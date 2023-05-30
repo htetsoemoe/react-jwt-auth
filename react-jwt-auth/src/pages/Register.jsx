@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { PasswordInput, TextInput, em } from '@mantine/core'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useRegisterMutation } from '../redux/api/authApi'
 
 const Register = () => {
@@ -11,13 +11,20 @@ const Register = () => {
 
   const [register] = useRegisterMutation()
 
+  // When registration is success, navigate to login
+  const navigate = useNavigate()
+
   // Submit event handler
   const registerHandler = async (event) => {
     try {
       event.preventDefault()
       const user = { name, email, password, password_confirmation }
-      const data = await register(user)
+      const {data} = await register(user) // returns Promise Object, need to use object destructing
       console.log(data)
+
+      if (data?.success === true) {
+        navigate('/login')
+      }
     } catch (error) {
       console.log(error)
     }
@@ -44,7 +51,7 @@ const Register = () => {
         <div className="flex gap-7">
           <p className="select-none text-cyan-900">Already have an account?</p>
           <Link to={'/login'}>
-            <p className="cursor-pointer underline select-none text-cyan-900">Login</p>
+            <p className="cursor-pointer hover:underline select-none text-cyan-900">Login</p>
           </Link>
         </div>
 
