@@ -2,6 +2,8 @@ import { PasswordInput, TextInput } from '@mantine/core'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLoginMutation } from '../redux/api/authApi'
+import { useDispatch } from 'react-redux'
+import { addUser } from '../redux/services/authSlice'
 
 const Login = () => {
 
@@ -14,14 +16,20 @@ const Login = () => {
   // use login api from rtk store
   const [login] = useLoginMutation()
 
+  // for adding successful login user to global state using authSlice's reducer
+  const dispatch = useDispatch()
+
   // login button handler
   const loginHandler = async (event) => {
     try {
       event.preventDefault()
 
-      const user = {email, password}
-      const {data} = await login(user); // returns promise, we need to use object destructuring
+      const user = { email, password }
+      const { data } = await login(user); // returns promise, we need to use object destructuring
       console.log(data)
+
+      // adding successful login user to global state using authSlice's reducer
+      dispatch(addUser({ user: data?.user, token: data?.token }))
 
       if (data?.success === true) {
         navigate("/")
