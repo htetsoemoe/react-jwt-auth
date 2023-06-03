@@ -4,6 +4,7 @@ import Dashboard from '../pages/Dashboard'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
 import RouteGuard from '../components/RouteGuard'
+import CreateContact from '../components/CreateContact'
 
 const Path = () => {
     return (
@@ -16,6 +17,7 @@ const Path = () => {
                 } />
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />
+                <Route path='/create' element={<CreateContact />}/>
             </Routes>
         </div>
     )
