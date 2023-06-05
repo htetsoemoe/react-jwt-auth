@@ -17,8 +17,17 @@ export const contactApi = createApi({
             query: ({ token, contact }) => ({
                 url: '/contact',
                 method: 'POST',
-                headers: {authorization: `Bearer ${token}`},
+                headers: { authorization: `Bearer ${token}` },
                 body: contact
+            }),
+            invalidatesTags: ['contact']
+        }),
+        deleteContact: builder.mutation({
+            query: ({ token, id }) => ({
+                url: `/contact/${id}`,
+                method: 'DELETE',
+                body: id,
+                headers: { authorization: `Bearer ${token}` }
             }),
             invalidatesTags: ['contact']
         })
@@ -27,4 +36,4 @@ export const contactApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetContactsQuery, useCreateContactMutation } = contactApi
+export const { useGetContactsQuery, useCreateContactMutation, useDeleteContactMutation } = contactApi

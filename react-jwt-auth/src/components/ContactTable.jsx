@@ -1,8 +1,10 @@
 import Cookies from 'js-cookie'
-import React from 'react'
-import { useGetContactsQuery } from '../redux/api/contactApi'
-import { Table } from '@mantine/core'
+import React, { useEffect } from 'react'
+import { useDeleteContactMutation, useGetContactsQuery } from '../redux/api/contactApi'
+import { Table, TextInput } from '@mantine/core'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { addContacts } from '../redux/services/contactSlice'
 
 const ContactTable = () => {
     // Get login user token from Cookie
@@ -11,6 +13,38 @@ const ContactTable = () => {
     // query all contacts from server using 'getContact' api from contactApi
     const { data, isLoading } = useGetContactsQuery(token) // data is a promise object
     console.log(data?.contacts?.data)
+
+    // deleteContact for delete specified contact with id
+    const [deleteContact] = useDeleteContactMutation()
+
+    // use contactSlice for store contact data in global state
+    const dispatch = useDispatch()
+
+    // after 'componentDidMounted' lifecycle method called fetched data to store in global state using contactSlice
+    useEffect(() => {
+        dispatch(addContacts(data?.contacts?.data))
+    }, [data])
+
+    const contacts = useSelector(state => state.contactSlice.contacts) // get contacts from global storage
+    console.log(contacts);
+
+    // create rows for contacts
+    const rows = contacts?.map((contact) => {
+        return (
+            <tr key={contact?.id}>
+                <td>{contact?.name}</td>
+                <td>{contact?.email === null ? 'example@gmail.com' : contact?.email}</td>
+                <td>{contact?.phone}</td>
+                <td>{contact?.address === null ? 'Mandalay, Myanmar.' : contact?.address}</td>
+                <td>
+                    <button onClick={async () => await deleteContact({ id: contact?.id, token })}
+                        className="my-3 mx-14 bg-red-900 text-white px-7 py-1 rounded">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        )
+    })
 
     if (isLoading) {
         return (
@@ -22,11 +56,17 @@ const ContactTable = () => {
 
     return (
         <>
-            <Link to={'/create'}>
-                <button className="my-5 mx-16 bg-cyan-900 text-white px-7 py-1 rounded">
-                    Create Contact
-                </button>
-            </Link>
+            <div className="flex items-center">
+                <Link to={'/create'}>
+                    <button className="my-5 mx-16 bg-cyan-900 text-white px-7 py-1 rounded">
+                        Create Contact
+                    </button>
+                </Link>
+
+                <TextInput
+                    placeholder='Search Contact'
+                />
+            </div>
 
             <div className="container mx-auto md:container mt-5">
                 <Table striped highlightOnHover withBorder horizontalSpacing="md" verticalSpacing="md" fontSize="md"
@@ -41,17 +81,7 @@ const ContactTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.contacts?.data.map((contact) => {
-                            return (
-                                <tr key={contact?.id}>
-                                    <td>{contact?.name}</td>
-                                    <td>{contact?.email === null ? 'example@gmail.com' : contact?.email}</td>
-                                    <td>{contact?.phone}</td>
-                                    <td>{contact?.address === null ? 'Mandalay, Myanmar.' : contact?.address}</td>
-                                    <td></td>
-                                </tr>
-                            )
-                        })}
+                        {rows}
                     </tbody>
                 </Table>
             </div>

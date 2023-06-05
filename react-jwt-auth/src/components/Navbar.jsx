@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLogoutMutation } from '../redux/api/authApi'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { removeUserCookie } from '../redux/services/authSlice'
 
@@ -31,7 +31,10 @@ const Navbar = () => {
 
     return (
         <div className='flex justify-between p-5 shadow items-center'>
-            <h2 className='text-2xl text-gray-950 font-semibold'>JWT Authentication</h2>
+            <Link to={'/'}>
+                <h2 className='text-2xl text-gray-950 font-semibold'>JWT Authentication</h2>
+            </Link>
+
             <div className="flex gap-10 justify-center items-center">
                 <div className='flex flex-col'>
                     <p>{user?.name}</p>
