@@ -19,7 +19,7 @@ const Login = () => {
 
   const form = useForm({
     initialValues: {
-      email: 'testing123@gmail.com',
+      email: 'testing@gmail.com',
       password: '123456789',
     },
 

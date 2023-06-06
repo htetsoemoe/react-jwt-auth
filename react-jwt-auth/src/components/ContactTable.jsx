@@ -2,9 +2,10 @@ import Cookies from 'js-cookie'
 import React, { useEffect } from 'react'
 import { useDeleteContactMutation, useGetContactsQuery } from '../redux/api/contactApi'
 import { Table, TextInput } from '@mantine/core'
-import { Link } from 'react-router-dom'
+import { Await, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addContacts } from '../redux/services/contactSlice'
+import Swal from 'sweetalert2'
 
 const ContactTable = () => {
     // Get login user token from Cookie
@@ -28,6 +29,30 @@ const ContactTable = () => {
     const contacts = useSelector(state => state.contactSlice.contacts) // get contacts from global storage
     console.log(contacts);
 
+    // delete contact with sweetalert2 confirm box and deleteContact mutation from authApi
+    const deleteHandler = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+                const data = await deleteContact({ id, token })// Get login user token from Cookie
+            }
+        })
+
+    }
+
+
     // create rows for contacts
     const rows = contacts?.map((contact) => {
         return (
@@ -37,7 +62,7 @@ const ContactTable = () => {
                 <td>{contact?.phone}</td>
                 <td>{contact?.address === null ? 'Mandalay, Myanmar.' : contact?.address}</td>
                 <td>
-                    <button onClick={async () => await deleteContact({ id: contact?.id, token })}
+                    <button onClick={async () => await deleteHandler(contact?.id)}
                         className="my-3 mx-14 bg-red-900 text-white px-7 py-1 rounded">
                         Delete
                     </button>

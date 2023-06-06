@@ -4,6 +4,8 @@ import { useLogoutMutation } from '../redux/api/authApi'
 import { Link, useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { removeUserCookie } from '../redux/services/authSlice'
+import { GiPlagueDoctorProfile } from 'react-icons/gi'
+import { MdEmail } from 'react-icons/md'
 
 const Navbar = () => {
     /* Before using js-cookie, get state from rtk slice
@@ -36,9 +38,14 @@ const Navbar = () => {
             </Link>
 
             <div className="flex gap-10 justify-center items-center">
-                <div className='flex flex-col'>
-                    <p>{user?.name}</p>
-                    <p>{user?.email}</p>
+                <div className='flex flex-col gap-2'>
+                    <div className="flex gap-3 items-center">
+                        <GiPlagueDoctorProfile /><p>{user?.name}</p>
+                    </div>
+                    <div className="flex gap-3 items-center">
+                        <MdEmail /><p>{user?.email}</p>
+                    </div>
+
                 </div>
                 <button onClick={logoutHandler} className='bg-red-900 text-white px-4 py-1 rounded'>
                     Logout

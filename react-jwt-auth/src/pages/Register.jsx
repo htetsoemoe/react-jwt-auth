@@ -72,7 +72,7 @@ const Register = () => {
         <button type="submit"
           disabled={isLoading && true}
           className='px-5 py-2 bg-cyan-900 text-white rounded'>
-          {isLoading ? (<Loader className='mx-auto block'/>) : "Sign In"}
+          {isLoading ? (<Loader className='mx-auto block'/>) : "Register"}
         </button>
       </form>
     </div>
