@@ -1,11 +1,12 @@
 import Cookies from 'js-cookie'
 import React, { useEffect } from 'react'
 import { useDeleteContactMutation, useGetContactsQuery } from '../redux/api/contactApi'
-import { Table, TextInput } from '@mantine/core'
-import { Await, Link } from 'react-router-dom'
+import { Table, TextInput, Menu, Button } from '@mantine/core'
+import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { addContacts } from '../redux/services/contactSlice'
+import { addContacts, setSearchText } from '../redux/services/contactSlice'
 import Swal from 'sweetalert2'
+import { MdOutlineArrowDropDownCircle } from 'react-icons/md'
 
 const ContactTable = () => {
     // Get login user token from Cookie
@@ -27,6 +28,7 @@ const ContactTable = () => {
     }, [data])
 
     const contacts = useSelector(state => state.contactSlice.contacts) // get contacts from global storage
+    const searchText = useSelector(state => state.contactSlice.searchText) // get search text from global storage
     console.log(contacts);
 
     // delete contact with sweetalert2 confirm box and deleteContact mutation from authApi
@@ -52,20 +54,44 @@ const ContactTable = () => {
 
     }
 
-
     // create rows for contacts
-    const rows = contacts?.map((contact) => {
+    const rows = contacts?.filter(contact => {
+        if (searchText === "") {
+            return contact
+        } else if (contact?.name.toLowerCase().includes(searchText?.toLowerCase())) {
+            return contact
+        }
+    }).map((contact) => {
         return (
             <tr key={contact?.id}>
                 <td>{contact?.name}</td>
                 <td>{contact?.email === null ? 'example@gmail.com' : contact?.email}</td>
                 <td>{contact?.phone}</td>
-                <td>{contact?.address === null ? 'Mandalay, Myanmar.' : contact?.address}</td>
+                <td>{contact?.address === null ? 'Middle of Somewhere' : contact?.address}</td>
                 <td>
-                    <button onClick={async () => await deleteHandler(contact?.id)}
-                        className="my-3 mx-14 bg-red-900 text-white px-7 py-1 rounded">
-                        Delete
-                    </button>
+                    <Menu width={200} shadow="md">
+                        <Menu.Target>
+                            <Button variant='outline'>
+                                <MdOutlineArrowDropDownCircle className=""/>
+                            </Button>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                            <Menu.Item>
+                                <p onClick={() => deleteHandler(contact?.id)} className='cursor-pointer text-red-900'>
+                                    Delete
+                                </p>
+                            </Menu.Item>
+
+                            <Link to={`/details/${contact?.id}`}>
+                                <Menu.Item>
+                                    <p>
+                                        User Details
+                                    </p>
+                                </Menu.Item>
+                            </Link>
+                        </Menu.Dropdown>
+                    </Menu>
                 </td>
             </tr>
         )
@@ -90,6 +116,8 @@ const ContactTable = () => {
 
                 <TextInput
                     placeholder='Search Contact'
+                    value={searchText}
+                    onChange={event => dispatch(setSearchText(event.target.value))}
                 />
             </div>
 

@@ -30,10 +30,17 @@ export const contactApi = createApi({
                 headers: { authorization: `Bearer ${token}` }
             }),
             invalidatesTags: ['contact']
+        }),
+        getSingleContact: builder.query({
+            query: ({id, token}) => ({
+                url: `contact/${id}`,
+                headers: { authorization: `Bearer ${token}` }
+            }),
+            providesTags: ['contact']
         })
     })
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetContactsQuery, useCreateContactMutation, useDeleteContactMutation } = contactApi
+export const { useGetContactsQuery, useCreateContactMutation, useDeleteContactMutation, useGetSingleContactQuery } = contactApi

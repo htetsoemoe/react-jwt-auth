@@ -5,6 +5,7 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import RouteGuard from '../components/RouteGuard'
 import CreateContact from '../components/CreateContact'
+import UserDetails from '../components/UserDetails'
 
 const Path = () => {
     return (
@@ -17,7 +18,8 @@ const Path = () => {
                 } />
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />
-                <Route path='/create' element={<CreateContact />}/>
+                <Route path='/create' element={<CreateContact />} />
+                <Route path='/details/:id' element={<UserDetails />} />
             </Routes>
         </div>
     )

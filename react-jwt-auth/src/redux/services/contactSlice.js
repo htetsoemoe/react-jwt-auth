@@ -11,9 +11,12 @@ export const contactSlice = createSlice({
     reducers: {
         addContacts: (state, { payload }) => {
             state.contacts = payload
+        },
+    setSearchText: (state, { payload }) => {
+            state.searchText = payload
         }
     }
 })
 
-export const { addContacts } = contactSlice.actions
+export const { addContacts,setSearchText } = contactSlice.actions
 export default contactSlice.reducer
